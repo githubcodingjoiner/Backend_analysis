@@ -2,12 +2,13 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'sonarnode'
+        nodejs 'sonarnode' // Ensure 'sonarnode' is configured correctly in Jenkins Global Tool Configuration
     }
 
     environment {
-        NODEJS_HOME = "C:\\Program Files\\nodejs"
+        NODEJS_HOME = "${tool name: 'sonarnode'}" // Dynamically retrieve Node.js installation path
         SONAR_SCANNER_PATH = "C:\\Users\\Admin\\Downloads\\sonar-scanner-6.2.1.4610-windows-x64\\bin"
+        PATH = "${env.NODEJS_HOME};${env.SONAR_SCANNER_PATH};${env.PATH}" // Append paths dynamically
     }
 
     stages {
@@ -21,7 +22,6 @@ pipeline {
             steps {
                 retry(3) {
                     bat '''
-                    set PATH=%NODEJS_HOME%;%PATH%
                     npm install
                     '''
                 }
@@ -31,7 +31,6 @@ pipeline {
         stage('Lint') {
             steps {
                 bat '''
-                set PATH=%NODEJS_HOME%;%PATH%
                 npm run lint || (echo "Linting failed! Check logs for details." && exit /b)
                 '''
             }
@@ -40,7 +39,6 @@ pipeline {
         stage('Build') {
             steps {
                 bat '''
-                set PATH=%NODEJS_HOME%;%PATH%
                 npm install @babel/plugin-proposal-private-property-in-object --save-dev
                 npm run build || (echo "Build failed! Check logs for details." && exit /b)
                 '''
@@ -53,7 +51,6 @@ pipeline {
             }
             steps {
                 bat '''
-                set PATH=%SONAR_SCANNER_PATH%;%PATH%
                 sonar-scanner ^
                 -Dsonar.projectKey=MERN_backend_pipeline ^
                 -Dsonar.sources=. ^
@@ -70,7 +67,6 @@ pipeline {
         }
         failure {
             echo 'Pipeline failed. Check the logs for errors.'
-            archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
         }
         always {
             cleanWs()
