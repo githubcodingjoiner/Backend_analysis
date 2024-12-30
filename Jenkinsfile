@@ -21,6 +21,7 @@ pipeline {
             steps {
                 retry(3) {
                     bat '''
+                    set PATH=%NODEJS_HOME%;%PATH%
                     npm install
                     '''
                 }
@@ -38,6 +39,7 @@ pipeline {
         stage('Build') {
             steps {
                 bat '''
+                set PATH=%NODEJS_HOME%;%PATH%
                 npm install @babel/plugin-proposal-private-property-in-object --save-dev
                 npm run build || (echo "Build failed! Check logs for details." && exit /b)
                 '''
@@ -50,11 +52,12 @@ pipeline {
             }
             steps {
                 bat '''
+                set PATH=%NODEJS_HOME%;%PATH%
                 sonar-scanner ^
                 -Dsonar.projectKey=MERN_backend_pipeline ^
                 -Dsonar.sources=. ^
                 -Dsonar.host.url=http://localhost:9000 ^
-                -Dsonar.login=${SONAR_TOKEN}
+                -Dsonar.login=%SONAR_TOKEN%
                 '''
             }
         }
