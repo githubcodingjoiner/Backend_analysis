@@ -31,10 +31,11 @@ pipeline {
         stage('Lint') {
             steps {
                 bat '''
-                npm run lint || (echo "Linting failed! Check logs for details." && exit /b)
+                npm run lint -- --fix || (echo "Linting failed! Check logs for details." && exit /b)
                 '''
             }
         }
+
 
         stage('Build') {
             steps {
