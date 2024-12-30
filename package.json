@@ -17,3 +17,7 @@
     "mongoose": "^8.8.2"
   }
 }
+"scripts": {
+  "lint": "eslint ."
+}
+
