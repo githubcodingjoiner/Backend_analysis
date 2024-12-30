@@ -31,7 +31,8 @@ pipeline {
         stage('Lint') {
             steps {
                 bat '''
-                npm run lint -- --fix || (echo "Linting failed! Check logs for details." && exit /b)
+                set PATH=%NODEJS_HOME%;%PATH%
+                npm run lint || exit /b
                 '''
             }
         }
