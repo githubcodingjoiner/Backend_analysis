@@ -48,20 +48,20 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-    environment {
-        SONAR_TOKEN = credentials('sonar-token')
-    }
-    steps {
-        bat '''
-        sonar-scanner 
-        -Dsonar.projectKey=MERN_backend_pipeline ^
-        -Dsonar.sources=. ^ 
-        -Dsonar.host.url=http://localhost:9000 ^
-        -Dsonar.token=${SONAR_TOKEN}
-        '''
-    }
-}
-
+            environment {
+                SONAR_TOKEN = credentials('sonar-token') // Ensure 'sonar-token' credential is set in Jenkins
+            }
+            steps {
+                bat '''
+                set PATH=%SONAR_SCANNER_PATH%;%PATH%
+                sonar-scanner ^
+                -Dsonar.projectKey=MERN_backend_pipeline ^
+                -Dsonar.sources=. ^
+                -Dsonar.host.url=http://localhost:9000 ^
+                -Dsonar.login=%SONAR_TOKEN%
+                '''
+            }
+        }
     }
 
     post {
