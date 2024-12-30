@@ -6,9 +6,8 @@ pipeline {
     }
 
     environment {
-        NODEJS_HOME = "${tool name: 'sonarnode'}" // Dynamically retrieve Node.js installation path
+        NODEJS_HOME = "C:\\Program Files\\nodejs" // Dynamically retrieve Node.js installation path
         SONAR_SCANNER_PATH = "C:\\Users\\Admin\\Downloads\\sonar-scanner-6.2.1.4610-windows-x64\\bin"
-        PATH = "${env.NODEJS_HOME};${env.SONAR_SCANNER_PATH};${env.PATH}" // Append paths dynamically
     }
 
     stages {
@@ -55,7 +54,7 @@ pipeline {
                 -Dsonar.projectKey=MERN_backend_pipeline ^
                 -Dsonar.sources=. ^
                 -Dsonar.host.url=http://localhost:9000 ^
-                -Dsonar.login=%SONAR_TOKEN% || (echo "SonarQube Analysis failed! Check logs for details." && exit /b)
+                -Dsonar.login=${SONAR_TOKEN}
                 '''
             }
         }
