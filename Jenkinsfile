@@ -32,7 +32,7 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                npm run lint || exit /b
+                npm run lint || (echo "Linting failed! Check logs for details." && exit /b)
                 '''
             }
         }
@@ -42,7 +42,7 @@ pipeline {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
                 npm install @babel/plugin-proposal-private-property-in-object --save-dev
-                npm run build
+                npm run build || (echo "Build failed! Check logs for details." && exit /b)
                 '''
             }
         }
@@ -58,7 +58,7 @@ pipeline {
                 -Dsonar.projectKey=MERN_backend_pipeline ^
                 -Dsonar.sources=. ^
                 -Dsonar.host.url=http://localhost:9000 ^
-                -Dsonar.login=%SONAR_TOKEN%
+                -Dsonar.login=%SONAR_TOKEN% || (echo "SonarQube Analysis failed! Check logs for details." && exit /b)
                 '''
             }
         }
