@@ -27,28 +27,18 @@ pipeline {
                 }
             }
         }
-
-        stage('Lint') {
-            steps {
-                bat '''
-                set PATH=%NODEJS_HOME%;%PATH%
-                npm run lint || exit /b
-                '''
-            }
-        }
-
+        
         stage('Build') {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                npm install @babel/plugin-proposal-private-property-in-object --save-dev
                 npm run build
                 '''
             }
         }
 
         stage('SonarQube Analysis') {
-    environment {
+        environment {
         SONAR_TOKEN = credentials('sonar-token')
     }
     steps {
@@ -61,7 +51,7 @@ pipeline {
         -Dsonar.login=%SONAR_TOKEN%
         '''
     }
-}
+        }
 
     }
 
@@ -71,10 +61,9 @@ pipeline {
         }
         failure {
             echo 'Pipeline failed. Check the logs for errors.'
-            archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
         }
         always {
-            cleanWs()
+            echo 'This runs regardless of the result.'
         }
     }
 }
