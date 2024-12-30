@@ -17,7 +17,7 @@ pipeline {
             }
         }
 
-        stage('Install dependencies') {
+        stage('Install Dependencies') {
             steps {
                 retry(3) {
                     bat '''
@@ -49,7 +49,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = credentials('sonar-token') // Ensure 'sonar-token' credential is set in Jenkins
+                SONAR_TOKEN = credentials('sonar-token') // Ensure this credential exists in Jenkins
             }
             steps {
                 bat '''
